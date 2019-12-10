@@ -2,8 +2,6 @@ package buaa.group6.scienceshare.service;
 
 import buaa.group6.scienceshare.Result.Result;
 import buaa.group6.scienceshare.model.User;
-import com.mongodb.client.result.DeleteResult;
-import com.mongodb.client.result.UpdateResult;
 
 public interface UserService {
     /**

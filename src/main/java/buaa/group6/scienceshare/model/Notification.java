@@ -1,5 +1,7 @@
 package buaa.group6.scienceshare.model;
 
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import java.time.LocalDateTime;
 
 public class Notification {

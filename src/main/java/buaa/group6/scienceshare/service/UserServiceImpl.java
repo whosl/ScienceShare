@@ -7,12 +7,16 @@ import buaa.group6.scienceshare.model.Notification;
 import buaa.group6.scienceshare.model.User;
 import buaa.group6.scienceshare.service.mongoRepository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
+@Primary
 public class UserServiceImpl implements UserService{
     @Autowired
     MongoTemplate mongoTemplate;
