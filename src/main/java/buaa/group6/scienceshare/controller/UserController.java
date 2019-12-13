@@ -11,11 +11,14 @@ import buaa.group6.scienceshare.service.UserService;
 import buaa.group6.scienceshare.service.mongoRepository.UserRepository;
 import buaa.group6.scienceshare.util.Md5SaltTool;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
@@ -44,22 +47,16 @@ public class UserController {
     }
 
     @RequestMapping(value = "login", method = RequestMethod.POST, produces = "application/json; charset = UTF-8")
-    public Result login(@RequestBody User loginUser, BindingResult bindingResult){
-        if(bindingResult.hasErrors()){
-            String message = String.format("登录失败，详细信息[%s]", bindingResult.getFieldError().getDefaultMessage());
-            return ResultFactory.buildFailResult(message);
-        }
-        User user = userService.getUserByUsername(loginUser.getUsername());
+    public Result login(@RequestParam String username, String password){
+        User user = userService.getUserByUsername(username);
 
         try{
             if(user == null){
                 return ResultFactory.buildFailResult(ResultCode.NotExist);
-            }else if(!Md5SaltTool.validPassword(loginUser.getPassword(),user.getPassword())){
-                return ResultFactory.buildFailResult(ResultCode.FAIL);
+            }else if(!Md5SaltTool.validPassword(password,user.getPassword())){
+                return ResultFactory.buildFailResult(ResultCode.INVALID_PASSWORD);
             }
-        }catch (NoSuchAlgorithmException e){
-            e.printStackTrace();
-        }catch (UnsupportedEncodingException e){
+        }catch (NoSuchAlgorithmException | UnsupportedEncodingException e){
             e.printStackTrace();
         }
         return ResultFactory.buildSuccessResult("登录成功");
@@ -215,6 +212,4 @@ public class UserController {
     public List<User> allMutedUser(){
         return userRepository.getByIdentity(0);
     }
-
-
 }
