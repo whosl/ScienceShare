@@ -15,7 +15,7 @@ public class User {
 
     private String password;
 
-    private int permission = 1;//0为被禁言，1为普通用户，2为管理员
+    private int identity = 1;//0为未认证专家，1为普通用户，2为已认证科技专家，3为管理员
 
     private List<Notification> notifications;//通知列表
 
@@ -70,12 +70,12 @@ public class User {
         this.avatarUrl = avaterUrl;
     }
 
-    public int getPermission() {
-        return permission;
+    public int getIdentity() {
+        return identity;
     }
 
-    public void setPermission(int permission) {
-        this.permission = permission;
+    public void setIdentity(int identity) {
+        this.identity = identity;
     }
 
     public List<Notification> getNotifications() {

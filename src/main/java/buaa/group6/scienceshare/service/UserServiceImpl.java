@@ -117,7 +117,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public int getPermission(String username) {
-        return getUserByUsername(username).getPermission();
+        return getUserByUsername(username).getIdentity();
     }
 
     @Override
@@ -127,7 +127,7 @@ public class UserServiceImpl implements UserService{
         if(p == 2)return ResultFactory.buildFailResult("无法禁言管理员！");
 
         User user = getUserByUsername(username);
-        user.setPermission(0);
+        user.setIdentity(0);
         userRepository.save(user);
         return ResultFactory.buildSuccessResult("禁言成功！");
     }
@@ -138,7 +138,7 @@ public class UserServiceImpl implements UserService{
         if(p == 1)return ResultFactory.buildFailResult("已处于自由发言状态！");
 
         User user = getUserByUsername(username);
-        user.setPermission(1);
+        user.setIdentity(1);
         userRepository.save(user);
         return ResultFactory.buildSuccessResult("解除禁言成功！");
     }

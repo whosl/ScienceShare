@@ -13,6 +13,7 @@ import buaa.group6.scienceshare.util.Md5SaltTool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
@@ -27,12 +28,20 @@ public class UserController {
     MailService mailService;
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    private RestTemplate restTemplate;
 
 //    @CrossOrigin
 //    @RequestMapping(value="addUser", method = RequestMethod.POST)
 //    public int addUser(@RequestBody User user) {
 //        return userService.addUser(user);
 //    }
+
+    @RequestMapping(value="/testEureka",method= RequestMethod.GET)
+    public String serviceA() {
+        String serviceA = restTemplate.getForEntity("http://bs/serviceB", String.class).getBody();
+        return "SCIENCESHARE " + serviceA;
+    }
 
     @RequestMapping(value = "login", method = RequestMethod.POST, produces = "application/json; charset = UTF-8")
     public Result login(@RequestBody User loginUser, BindingResult bindingResult){
@@ -135,13 +144,13 @@ public class UserController {
      *向前端返回注册时间
      * @return String
      */
-    @RequestMapping(value = "time/{username}", method = RequestMethod.GET)
-    public String getTime(@PathVariable (value = "username")String username) {
+    @RequestMapping(value = "getCreateTime", method = RequestMethod.GET)
+    public String getTime(@RequestParam String username) {
         return userService.getUserByUsername(username).getCreatedDate().toString();
     }
 
-    @RequestMapping(value = "/getUser/{username}", method = RequestMethod.GET)
-    public User getUser(@PathVariable (value = "username") String username){
+    @RequestMapping(value = "/getUser", method = RequestMethod.GET)
+    public User getUser(@RequestParam String username){
         return userService.getUserByUsername(username);
     }
 
@@ -158,8 +167,8 @@ public class UserController {
 //        return userService.getUserByUsername(username).getCreatedDate().toString();
 //    }
 
-    @RequestMapping(value = "deleteUser/username={username}", method = RequestMethod.POST)
-    public void deleteUser(@PathVariable (value = "username") String username){
+    @RequestMapping(value = "deleteUser", method = RequestMethod.POST)
+    public void deleteUser(@RequestParam String username){
         System.out.println(userService.getUserByUsername(username).getId());
         userService.deleteUser(username);
     }
