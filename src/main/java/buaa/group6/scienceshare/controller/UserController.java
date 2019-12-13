@@ -4,15 +4,11 @@ import buaa.group6.scienceshare.Result.Result;
 import buaa.group6.scienceshare.Result.ResultCode;
 import buaa.group6.scienceshare.Result.ResultFactory;
 import buaa.group6.scienceshare.model.User;
-import buaa.group6.scienceshare.model.Vo.ChangeAvatarVo;
-import buaa.group6.scienceshare.model.Vo.ChangePswdVo;
 import buaa.group6.scienceshare.service.MailService;
 import buaa.group6.scienceshare.service.UserService;
 import buaa.group6.scienceshare.service.mongoRepository.UserRepository;
 import buaa.group6.scienceshare.util.Md5SaltTool;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -46,7 +42,7 @@ public class UserController {
         return "SCIENCESHARE " + serviceA;
     }
 
-    @RequestMapping(value = "login", method = RequestMethod.POST, produces = "application/json; charset = UTF-8")
+    @RequestMapping(value = "login", method = RequestMethod.GET, produces = "application/json; charset = UTF-8")
     public Result login(@RequestParam String username, String password){
         User user = userService.getUserByUsername(username);
 
@@ -71,33 +67,27 @@ public class UserController {
     }
 
 
-    @RequestMapping(value = "register", method = RequestMethod.POST)
-    public Result register(@RequestBody User registerUser, BindingResult bindingResult){
-        if(bindingResult.hasErrors()){
-            String message = String.format("注册失败，详细信息[%s]", bindingResult.getFieldError().getDefaultMessage());
-            return ResultFactory.buildFailResult(message);
-        }
-        User user = userService.getUserByUsername(registerUser.getUsername());
+    @RequestMapping(value = "register", method = RequestMethod.GET)
+    public Result register(@RequestParam String username, String password, String emailAddress){
+        User user = userService.getUserByUsername(username);
 
         if(user != null){
             return ResultFactory.buildFailResult(ResultCode.HaveExist);
-        }else if(registerUser.getUsername().equals("") || registerUser.getPassword().equals("")){
+        }else if(username.equals("") || password.equals("")){
             return ResultFactory.buildFailResult(ResultCode.FAIL);
         }
 
-        if(!rexCheckPassword(registerUser.getPassword()))
+        if(!rexCheckPassword(password))
             return ResultFactory.buildFailResult(ResultCode.INVALID_PASSWORD);
 
         User user1 = new User();
         String encryptedPwd = null;
         try{
-            encryptedPwd = Md5SaltTool.getEncryptedPwd(registerUser.getPassword());
-            user1.setUsername(registerUser.getUsername());
+            encryptedPwd = Md5SaltTool.getEncryptedPwd(password);
+            user1.setUsername(username);
             user1.setPassword(encryptedPwd);
-            user1.setEmailAddress(registerUser.getEmailAddress());
-        }catch (NoSuchAlgorithmException e){
-            e.printStackTrace();
-        }catch (UnsupportedEncodingException e){
+            user1.setEmailAddress(emailAddress);
+        }catch (NoSuchAlgorithmException | UnsupportedEncodingException e){
             e.printStackTrace();
         }
 
@@ -116,23 +106,21 @@ public class UserController {
         return input.matches(regStr);
     }
 
-    @RequestMapping(value = "changepswd", method = RequestMethod.POST)
-    public Result changePassword(@RequestBody ChangePswdVo changePswdVo){
-        User user = userService.getUserByUsername(changePswdVo.getUsername());
+    @RequestMapping(value = "changepswd", method = RequestMethod.GET)
+    public Result changePassword(@RequestParam String username, String oldPassword, String newPassword){
+        User user = userService.getUserByUsername(username);
         String encryptedPwd = null;
         try{
-            if(!Md5SaltTool.validPassword(changePswdVo.getOldPswd(),user.getPassword())){
+            if(!Md5SaltTool.validPassword(oldPassword,user.getPassword())){
                 return ResultFactory.buildFailResult(ResultCode.FAIL);
             }
-            if(!rexCheckPassword(changePswdVo.getNewPswd())){
+            if(!rexCheckPassword(newPassword)){
                 return  ResultFactory.buildFailResult(ResultCode.INVALID_PASSWORD);
             }
-            encryptedPwd = Md5SaltTool.getEncryptedPwd(changePswdVo.getNewPswd());
+            encryptedPwd = Md5SaltTool.getEncryptedPwd(newPassword);
             user.setPassword(encryptedPwd);
             userService.changePswd(user);
-        }catch (NoSuchAlgorithmException e){
-            e.printStackTrace();
-        }catch (UnsupportedEncodingException e){
+        }catch (NoSuchAlgorithmException | UnsupportedEncodingException e){
             e.printStackTrace();
         }
         return ResultFactory.buildSuccessResult("修改密码成功");
@@ -151,11 +139,11 @@ public class UserController {
         return userService.getUserByUsername(username);
     }
 
-    @RequestMapping(value = "uploadAvatar", method = RequestMethod.POST)
-    public Result uploadAvatar(@RequestBody ChangeAvatarVo changeAvatarVo){
-        User user = userService.getUserByUsername(changeAvatarVo.getUsername());
+    @RequestMapping(value = "uploadAvatar", method = RequestMethod.GET)
+    public Result uploadAvatar(@RequestParam String username, String avatarUrl){
+        User user = userService.getUserByUsername(username);
         if(user == null) return ResultFactory.buildFailResult(ResultCode.NOT_FOUND);
-        user.setAvatarUrl(changeAvatarVo.getAvatarUrl());
+        user.setAvatarUrl(avatarUrl);
         userService.uploadAvatar(user);
         return ResultFactory.buildSuccessResult("头像上传成功");
     }
@@ -181,7 +169,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "getUnreadNotifiNum", method = RequestMethod.GET)
-    public int getUnreadNotifiNum(String username){
+    public int getUnreadNotifiNum(@RequestParam String username){
         User user = userRepository.getByUsername(username);
         return user.getUnreadNotification();
     }
