@@ -76,7 +76,7 @@ public class UserServiceImpl implements UserService{
         }
     }
 
-    private void updateNotification(User user){
+    public void updateNotification(User user){
         userRepository.save(user);
     }
 

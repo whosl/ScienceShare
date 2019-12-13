@@ -213,6 +213,8 @@ public class UserController {
 
     @RequestMapping(value = "allMutedUser", method = RequestMethod.GET)
     public List<User> allMutedUser(){
-        return userRepository.getByPermission(0);
+        return userRepository.getByIdentity(0);
     }
+
+
 }
