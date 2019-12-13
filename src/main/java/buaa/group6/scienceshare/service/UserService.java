@@ -38,10 +38,9 @@ public interface UserService {
 
     void updatePrestige(String username, int val);
 
-    int getPermission(String username);
+    int getIdentify(String username);
 
-    Result muteUser(String username);
+    Result authenticateExpert(String username);
 
-    Result unmuteUser(String username);
 
 }

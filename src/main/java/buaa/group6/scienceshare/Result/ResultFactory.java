@@ -52,6 +52,16 @@ public class ResultFactory {
      * 产生信息
      * @param resultCode
      * @param message
+     * @return Result
+     */
+    public static Result buildResult(ResultCode resultCode, String message) {
+        return buildResult(resultCode.code, message, null);
+    }
+
+    /**
+     * 产生信息
+     * @param resultCode
+     * @param message
      * @param data
      * @return Result
      */

@@ -96,7 +96,7 @@ public class UserServiceImpl implements UserService{
     public Result readAllNotification(String username){
         User user = getUserByUsername(username);
         List<Notification> notifications = user.getNotifications();
-        if(notifications == null)ResultFactory.buildFailResult(ResultCode.NOT_FOUND);//为找到任何消息
+        if(notifications == null)ResultFactory.buildResult(ResultCode.NOT_FOUND, "未找到任何消息");//
         for(Notification n : notifications){
             if(n.getRead() == 0) n.setRead(1);//标为已读
             user.setUnreadNotification(user.getUnreadNotification()-1);
@@ -116,30 +116,15 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public int getPermission(String username) {
+    public int getIdentify(String username) {
         return getUserByUsername(username).getIdentity();
     }
 
     @Override
-    public Result muteUser(String username) {
-        int p = getPermission(username);
-        if(p == 0)return ResultFactory.buildFailResult("已被禁言");
-        if(p == 2)return ResultFactory.buildFailResult("无法禁言管理员！");
-
+    public Result authenticateExpert(String username) {
         User user = getUserByUsername(username);
-        user.setIdentity(0);
+        user.setIdentity(2);
         userRepository.save(user);
-        return ResultFactory.buildSuccessResult("禁言成功！");
-    }
-
-    @Override
-    public Result unmuteUser(String username){
-        int p = getPermission(username);
-        if(p == 1)return ResultFactory.buildFailResult("已处于自由发言状态！");
-
-        User user = getUserByUsername(username);
-        user.setIdentity(1);
-        userRepository.save(user);
-        return ResultFactory.buildSuccessResult("解除禁言成功！");
+        return ResultFactory.buildSuccessResult("专家认证通过！");
     }
 }

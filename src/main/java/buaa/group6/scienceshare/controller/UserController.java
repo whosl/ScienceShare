@@ -14,7 +14,6 @@ import org.springframework.web.client.RestTemplate;
 
 
 import java.io.UnsupportedEncodingException;
-import java.net.URL;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
@@ -36,21 +35,15 @@ public class UserController {
 //        return userService.addUser(user);
 //    }
 
-    @RequestMapping(value="/testEureka",method= RequestMethod.GET)
-    public String serviceA() {
-        String serviceA = restTemplate.getForEntity("http://bs/serviceB", String.class).getBody();
-        return "SCIENCESHARE " + serviceA;
-    }
-
     @RequestMapping(value = "login", method = RequestMethod.GET, produces = "application/json; charset = UTF-8")
     public Result login(@RequestParam String username, String password){
         User user = userService.getUserByUsername(username);
 
         try{
             if(user == null){
-                return ResultFactory.buildFailResult(ResultCode.NotExist);
+                return ResultFactory.buildResult(ResultCode.NotExist, "用户不存在！");
             }else if(!Md5SaltTool.validPassword(password,user.getPassword())){
-                return ResultFactory.buildFailResult(ResultCode.INVALID_PASSWORD);
+                return ResultFactory.buildResult(ResultCode.INVALID_PASSWORD, "密码错误！");
             }
         }catch (NoSuchAlgorithmException | UnsupportedEncodingException e){
             e.printStackTrace();
@@ -72,13 +65,13 @@ public class UserController {
         User user = userService.getUserByUsername(username);
 
         if(user != null){
-            return ResultFactory.buildFailResult(ResultCode.HaveExist);
+            return ResultFactory.buildResult(ResultCode.HaveExist, "用户已存在！");
         }else if(username.equals("") || password.equals("")){
             return ResultFactory.buildFailResult(ResultCode.FAIL);
         }
 
         if(!rexCheckPassword(password))
-            return ResultFactory.buildFailResult(ResultCode.INVALID_PASSWORD);
+            return ResultFactory.buildResult(ResultCode.INVALID_PASSWORD, "密码错误！");
 
         User user1 = new User();
         String encryptedPwd = null;
@@ -106,16 +99,16 @@ public class UserController {
         return input.matches(regStr);
     }
 
-    @RequestMapping(value = "changepswd", method = RequestMethod.GET)
+    @RequestMapping(value = "changePassword", method = RequestMethod.GET)
     public Result changePassword(@RequestParam String username, String oldPassword, String newPassword){
         User user = userService.getUserByUsername(username);
         String encryptedPwd = null;
         try{
             if(!Md5SaltTool.validPassword(oldPassword,user.getPassword())){
-                return ResultFactory.buildFailResult(ResultCode.FAIL);
+                return ResultFactory.buildResult(ResultCode.INVALID_PASSWORD, "密码错误！");
             }
             if(!rexCheckPassword(newPassword)){
-                return  ResultFactory.buildFailResult(ResultCode.INVALID_PASSWORD);
+                return  ResultFactory.buildResult(ResultCode.INVALID_PASSWORD, "密码格式错误！");
             }
             encryptedPwd = Md5SaltTool.getEncryptedPwd(newPassword);
             user.setPassword(encryptedPwd);
@@ -134,7 +127,7 @@ public class UserController {
         return userService.getUserByUsername(username).getCreatedDate().toString();
     }
 
-    @RequestMapping(value = "/getUser", method = RequestMethod.GET)
+    @RequestMapping(value = "getUser", method = RequestMethod.GET)
     public User getUser(@RequestParam String username){
         return userService.getUserByUsername(username);
     }
@@ -142,7 +135,7 @@ public class UserController {
     @RequestMapping(value = "uploadAvatar", method = RequestMethod.GET)
     public Result uploadAvatar(@RequestParam String username, String avatarUrl){
         User user = userService.getUserByUsername(username);
-        if(user == null) return ResultFactory.buildFailResult(ResultCode.NOT_FOUND);
+        if(user == null) return ResultFactory.buildResult(ResultCode.NOT_FOUND, "用户不存在");
         user.setAvatarUrl(avatarUrl);
         userService.uploadAvatar(user);
         return ResultFactory.buildSuccessResult("头像上传成功");
@@ -179,25 +172,26 @@ public class UserController {
         return userService.readAllNotification(username);
     }
 
-    @RequestMapping(value = "getPermission", method = RequestMethod.GET)
+    @RequestMapping(value = "getIdentify", method = RequestMethod.GET)
     public int getPermission(@RequestParam String username){
-        return userService.getPermission(username);
+        return userService.getIdentify(username);
     }
 
-    @RequestMapping(value = "muteUser", method = RequestMethod.GET)
-    public Result muteUser(@RequestParam String username){
-        userService.notify("管理员", username, "已将你禁言！", 3, "mute");
-        return userService.muteUser(username);
+    @RequestMapping(value = "authenticateExpert", method = RequestMethod.GET)
+    public Result changeToExpert(@RequestParam String username){
+        int p = userService.getIdentify(username);
+        if(p == 2)return ResultFactory.buildFailResult("该专家已是已认证专家");
+        userService.notify("我们", username, "已通过您的专家认证申请！", 1, "auth");
+        return userService.authenticateExpert(username);
     }
 
-    @RequestMapping(value = "unmuteUser", method = RequestMethod.GET)
-    public Result unmuteUser(@RequestParam String username){
-        userService.notify("管理员", username, "已将你解除禁言！", 6, "unmute");
-        return userService.unmuteUser(username);
-    }
-
-    @RequestMapping(value = "allMutedUser", method = RequestMethod.GET)
-    public List<User> allMutedUser(){
+    @RequestMapping(value = "allUnAuthExpert", method = RequestMethod.GET)
+    public List<User> allUnAuthExpert(){
         return userRepository.getByIdentity(0);
+    }
+
+    @RequestMapping(value = "allAuthExpert", method = RequestMethod.GET)
+    public List<User> allAuthExpert(){
+        return userRepository.getByIdentity(2);
     }
 }
