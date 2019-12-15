@@ -56,7 +56,7 @@ UserCenter部分
 
 请求URL：
 
-> http://UserCenter/register?username=温卓林
+> http://UserCenter/getIdentify?username=温卓林
 
 返回实例：
 

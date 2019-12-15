@@ -3,9 +3,11 @@ package buaa.group6.scienceshare.controller;
 import buaa.group6.scienceshare.Result.Result;
 import buaa.group6.scienceshare.Result.ResultCode;
 import buaa.group6.scienceshare.Result.ResultFactory;
+import buaa.group6.scienceshare.model.MagPaper;
 import buaa.group6.scienceshare.model.User;
 import buaa.group6.scienceshare.service.MailService;
 import buaa.group6.scienceshare.service.UserService;
+import buaa.group6.scienceshare.service.mongoRepository.PaperRepository;
 import buaa.group6.scienceshare.service.mongoRepository.UserRepository;
 import buaa.group6.scienceshare.util.Md5SaltTool;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -194,4 +196,6 @@ public class UserController {
     public List<User> allAuthExpert(){
         return userRepository.getByIdentity(2);
     }
+
+
 }
