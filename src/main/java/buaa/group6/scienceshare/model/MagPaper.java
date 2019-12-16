@@ -16,7 +16,7 @@ public class MagPaper implements Serializable {
 
     String title;
 
-    Iterable<Author> authors;
+    List<Author> authors;
 
     int year;
 
@@ -58,11 +58,11 @@ public class MagPaper implements Serializable {
         this.title = title;
     }
 
-    public Iterable<Author> getAuthors() {
+    public List<Author> getAuthors() {
         return authors;
     }
 
-    public void setAuthors(Iterable<Author> authors) {
+    public void setAuthors(List<Author> authors) {
         this.authors = authors;
     }
 

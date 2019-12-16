@@ -2,11 +2,15 @@ package buaa.group6.scienceshare.model;
 
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
+@Document
 public class Author {
     private String name;
 
-    private String id;
+    @Field("id")
+    private String i;
 
     public String getName() {
         return name;
@@ -17,10 +21,10 @@ public class Author {
     }
 
     public String getId() {
-        return id;
+        return i;
     }
 
     public void setId(String id) {
-        this.id = id;
+        this.i = id;
     }
 }

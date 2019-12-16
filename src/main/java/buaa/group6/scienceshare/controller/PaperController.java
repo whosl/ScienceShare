@@ -26,7 +26,7 @@ public class PaperController {
 
     @RequestMapping(value = "getPaperById", method = RequestMethod.GET)
     public Object getPaperById(@RequestParam String id){
-        return paperRepository.getById(id);
+        return paperRepository.getById(id).getAuthors().get(0).getId();
     }
 
     @RequestMapping(value = "getPaper", method = RequestMethod.GET)
