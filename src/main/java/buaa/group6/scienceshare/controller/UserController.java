@@ -11,12 +11,14 @@ import buaa.group6.scienceshare.service.mongoRepository.PaperRepository;
 import buaa.group6.scienceshare.service.mongoRepository.UserRepository;
 import buaa.group6.scienceshare.util.Md5SaltTool;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.expression.spel.ast.NullLiteral;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -199,5 +201,64 @@ public class UserController {
         return userRepository.getByIdentity(2);
     }
 
+    @RequestMapping(value = "follow", method = RequestMethod.GET)
+    public Result follow(@RequestParam String followUserName, String myUserName){
+        User followUser = userService.getUserByUsername(followUserName);
+        if(followUser == null) return ResultFactory.buildResult(ResultCode.NOT_FOUND, "要关注的用户不存在");
+        User myUser = userService.getUserByUsername(myUserName);
+        if(myUser == null) return ResultFactory.buildResult(ResultCode.NOT_FOUND, "用户不存在");
+        //update follow User
+        List<String> followers =followUser.getFollowers();
+        if(followers == null) followers = new ArrayList<>();
+        else if(followers.contains(myUserName))
+            return ResultFactory.buildResult(ResultCode.HaveExist, "已关注过该用户！");
+        followers.add(myUserName);
+        followUser.setFollowers(followers);
+        userService.updateUser(followUser);
+        //update my user
+        List<String> following = myUser.getFollowing();
+        if(following == null) following = new ArrayList<>();
+        following.add(followUserName);
+        myUser.setFollowing(following);
+        userService.updateUser(myUser);
+        return ResultFactory.buildSuccessResult("关注成功！");
+    }
+
+    @RequestMapping(value = "unFollow", method = RequestMethod.GET)
+    public Result unFollow(@RequestParam String followUserName, String myUserName){
+        User followUser = userService.getUserByUsername(followUserName);
+        if(followUser == null) return ResultFactory.buildResult(ResultCode.NOT_FOUND, "要取消关注的用户不存在");
+        User myUser = userService.getUserByUsername(myUserName);
+        if(myUser == null) return ResultFactory.buildResult(ResultCode.NOT_FOUND, "用户不存在");
+        //update follow User
+        List<String> followers =followUser.getFollowers();
+        if(followers == null || !followers.contains(myUserName))
+            return ResultFactory.buildResult(ResultCode.NotExist, "未关注该用户");
+        else followers.remove(myUserName);
+        followUser.setFollowers(followers);
+        userService.updateUser(followUser);
+        //update my user
+        List<String> following = myUser.getFollowing();
+        if(following == null || !following.contains(followUserName))
+            return ResultFactory.buildResult(ResultCode.NotExist, "未关注该用户");
+        else following.remove(followUserName);
+        myUser.setFollowing(following);
+        userService.updateUser(myUser);
+        return ResultFactory.buildSuccessResult("取消关注成功！");
+    }
+
+
+    /**
+     * 判断当前是否follow某个用户
+     * @param followUserName ：被follow的用户
+     * @Param myUserName ：follow的用户
+     * @return int : 若已follow，返回1，否则返回0
+     */
+    @RequestMapping(value = "isFollowing", method = RequestMethod.GET)
+    public int isFollowing(@RequestParam String followUserName, String myUserName){
+        List<String> followers = userRepository.getByUsername(followUserName).getFollowers();
+        if(followers.contains(myUserName)) return 1;
+        else return 0;
+    }
 
 }

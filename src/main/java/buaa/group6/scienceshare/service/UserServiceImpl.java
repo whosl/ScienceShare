@@ -127,4 +127,9 @@ public class UserServiceImpl implements UserService{
         userRepository.save(user);
         return ResultFactory.buildSuccessResult("专家认证通过！");
     }
+
+    @Override
+    public void updateUser(User user) {
+        userRepository.save(user);
+    }
 }

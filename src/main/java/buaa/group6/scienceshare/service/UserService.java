@@ -42,5 +42,5 @@ public interface UserService {
 
     Result authenticateExpert(String username);
 
-
+    void updateUser(User user);
 }
