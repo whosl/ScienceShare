@@ -8,10 +8,6 @@ public class Author {
 
     private String id;
 
-    private String idd;
-
-    private String iddds;
-
     public String getName() {
         return name;
     }
