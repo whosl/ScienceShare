@@ -37,6 +37,8 @@ public class UserController {
 //        return userService.addUser(user);
 //    }
 
+
+
     @RequestMapping(value = "login", method = RequestMethod.GET, produces = "application/json; charset = UTF-8")
     public Result login(@RequestParam String username, String password){
         User user = userService.getUserByUsername(username);

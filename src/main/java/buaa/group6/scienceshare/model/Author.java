@@ -1,8 +1,30 @@
 package buaa.group6.scienceshare.model;
 
 
-public class Author {
-    String name;
+import org.springframework.data.annotation.Id;
 
-    String id;
+public class Author {
+    private String name;
+
+    private String id;
+
+    private String idd;
+
+    private String iddds;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 }

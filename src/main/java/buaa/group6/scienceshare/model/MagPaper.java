@@ -4,6 +4,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Document(collection = "magpapers")
@@ -15,7 +16,7 @@ public class MagPaper implements Serializable {
 
     String title;
 
-    List<Object> authors;
+    Iterable<Author> authors;
 
     int year;
 
@@ -57,11 +58,11 @@ public class MagPaper implements Serializable {
         this.title = title;
     }
 
-    public List<Object> getAuthors() {
+    public Iterable<Author> getAuthors() {
         return authors;
     }
 
-    public void setAuthors(List<Object> authors) {
+    public void setAuthors(Iterable<Author> authors) {
         this.authors = authors;
     }
 

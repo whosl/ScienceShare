@@ -1,9 +1,11 @@
 package buaa.group6.scienceshare.controller;
 
+import buaa.group6.scienceshare.model.Author;
 import buaa.group6.scienceshare.model.MagPaper;
 import buaa.group6.scienceshare.service.mongoRepository.PaperRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -24,7 +26,7 @@ public class PaperController {
 
     @RequestMapping(value = "getPaperById", method = RequestMethod.GET)
     public Object getPaperById(@RequestParam String id){
-        return paperRepository.getById(id).getAuthors();
+        return paperRepository.getById(id);
     }
 
     @RequestMapping(value = "getPaper", method = RequestMethod.GET)
