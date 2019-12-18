@@ -6,6 +6,7 @@ import buaa.group6.scienceshare.Result.ResultFactory;
 import buaa.group6.scienceshare.model.ExpertApplication;
 import buaa.group6.scienceshare.model.MagPaper;
 import buaa.group6.scienceshare.model.User;
+import buaa.group6.scienceshare.model.UserWithAvatar;
 import buaa.group6.scienceshare.service.ExpertApplicationService;
 import buaa.group6.scienceshare.service.MailService;
 import buaa.group6.scienceshare.service.UserService;
@@ -265,13 +266,25 @@ public class UserController {
     }
 
     @RequestMapping(value = "allFollowing", method = RequestMethod.GET)
-    public List<String> allFollowing(@RequestParam String username){
-        return userService.getUserByUsername(username).getFollowing();
+    public List<UserWithAvatar> allFollowing(@RequestParam String username){
+        List<String> following = userService.getUserByUsername(username).getFollowing();
+        List<UserWithAvatar> users = new ArrayList<>();
+        for(String name : following){
+            UserWithAvatar userWithAvatar = new UserWithAvatar(name, getAvatarByUsername(username));
+            users.add(userWithAvatar);
+        }
+        return users;
     }
 
     @RequestMapping(value = "allFollowers", method = RequestMethod.GET)
-    public List<String> allFollowers(@RequestParam String username){
-        return userService.getUserByUsername(username).getFollowers();
+    public List<UserWithAvatar> allFollowers(@RequestParam String username){
+        List<String> followers = userService.getUserByUsername(username).getFollowers();
+        List<UserWithAvatar> users = new ArrayList<>();
+        for(String name : followers){
+            UserWithAvatar userWithAvatar = new UserWithAvatar(name, getAvatarByUsername(username));
+            users.add(userWithAvatar);
+        }
+        return users;
     }
 
 }

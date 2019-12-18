@@ -26,6 +26,7 @@ public class ApplicationController {
         ExpertApplication newApplication = new ExpertApplication();
         newApplication.setAffiliation(affiliation);
         newApplication.setApplyUserName(username);
+        newApplication.setContent(content);
         newApplication.setAuthorId(authorId);
         expertApplicationService.updateApplication(newApplication);
         return ResultFactory.buildSuccessResult("提交申请成功!");
