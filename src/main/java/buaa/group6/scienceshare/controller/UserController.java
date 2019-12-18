@@ -270,7 +270,7 @@ public class UserController {
         List<String> following = userService.getUserByUsername(username).getFollowing();
         List<UserWithAvatar> users = new ArrayList<>();
         for(String name : following){
-            UserWithAvatar userWithAvatar = new UserWithAvatar(name, getAvatarByUsername(username));
+            UserWithAvatar userWithAvatar = new UserWithAvatar(name, getAvatarByUsername(name));
             users.add(userWithAvatar);
         }
         return users;
@@ -281,7 +281,7 @@ public class UserController {
         List<String> followers = userService.getUserByUsername(username).getFollowers();
         List<UserWithAvatar> users = new ArrayList<>();
         for(String name : followers){
-            UserWithAvatar userWithAvatar = new UserWithAvatar(name, getAvatarByUsername(username));
+            UserWithAvatar userWithAvatar = new UserWithAvatar(name, getAvatarByUsername(name));
             users.add(userWithAvatar);
         }
         return users;
