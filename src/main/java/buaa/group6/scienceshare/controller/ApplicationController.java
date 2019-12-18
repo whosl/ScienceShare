@@ -2,8 +2,10 @@ package buaa.group6.scienceshare.controller;
 
 import buaa.group6.scienceshare.Result.Result;
 import buaa.group6.scienceshare.Result.ResultFactory;
+import buaa.group6.scienceshare.model.College;
 import buaa.group6.scienceshare.model.ExpertApplication;
 import buaa.group6.scienceshare.service.ExpertApplicationService;
+import buaa.group6.scienceshare.service.mongoRepository.CollegeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -16,6 +18,8 @@ import java.util.List;
 public class ApplicationController {
     @Autowired
     ExpertApplicationService expertApplicationService;
+    @Autowired
+    CollegeRepository collegeRepository;
 
     @RequestMapping(value = "sendApplication", method = RequestMethod.GET)
     public Result sendApplication(@RequestParam String username, String content, String authorId, String affiliation){
@@ -30,5 +34,10 @@ public class ApplicationController {
     @RequestMapping(value = "allApplication", method = RequestMethod.GET)
     public List<ExpertApplication> allApplication(){
         return expertApplicationService.allApplication();
+    }
+
+    @RequestMapping(value = "getCollegeByKeyword", method = RequestMethod.GET)
+    public List<College> getCollegeByKeyword(@RequestParam String keyword){
+        return collegeRepository.getAllByNameContaining(keyword);
     }
 }
