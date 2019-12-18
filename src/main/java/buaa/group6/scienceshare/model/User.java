@@ -36,6 +36,8 @@ public class User {
 
     private String authorId;//普通用户为空，若为专家，则为专家id
 
+    private String college;
+
     public String getId() {
         return id;
     }
@@ -138,5 +140,13 @@ public class User {
 
     public void setAuthorId(String authorId) {
         this.authorId = authorId;
+    }
+
+    public String getCollege() {
+        return college;
+    }
+
+    public void setCollege(String college) {
+        this.college = college;
     }
 }

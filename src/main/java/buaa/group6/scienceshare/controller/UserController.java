@@ -264,4 +264,14 @@ public class UserController {
         else return 0;
     }
 
+    @RequestMapping(value = "allFollowing", method = RequestMethod.GET)
+    public List<String> allFollowing(@RequestParam String username){
+        return userService.getUserByUsername(username).getFollowing();
+    }
+
+    @RequestMapping(value = "allFollowers", method = RequestMethod.GET)
+    public List<String> allFollowers(@RequestParam String username){
+        return userService.getUserByUsername(username).getFollowers();
+    }
+
 }
