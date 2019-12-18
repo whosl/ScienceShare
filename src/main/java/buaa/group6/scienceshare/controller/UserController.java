@@ -286,5 +286,14 @@ public class UserController {
         }
         return users;
     }
+    @RequestMapping(value = "changeMail", method = RequestMethod.GET)
+    public Result changeMail(@RequestParam String username,String mail){
+        User user = userService.getUserByUsername(username);
+
+        user.setEmailAddress(mail);
+        userService.changeMail(user);
+
+        return ResultFactory.buildSuccessResult("修改邮箱成功");
+    }
 
 }

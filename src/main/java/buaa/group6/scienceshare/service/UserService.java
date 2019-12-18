@@ -43,4 +43,5 @@ public interface UserService {
     Result authenticateExpert(String username, String authorId);
 
     void updateUser(User user);
+    void changeMail(User user);
 }
