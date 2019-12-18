@@ -34,6 +34,8 @@ public class User {
 
     private List<String> following;
 
+    private String authorId;//普通用户为空，若为专家，则为专家id
+
     public String getId() {
         return id;
     }
@@ -128,5 +130,13 @@ public class User {
 
     public void setFollowing(List<String> following) {
         this.following = following;
+    }
+
+    public String getAuthorId() {
+        return authorId;
+    }
+
+    public void setAuthorId(String authorId) {
+        this.authorId = authorId;
     }
 }

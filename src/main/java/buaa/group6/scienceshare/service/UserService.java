@@ -40,7 +40,7 @@ public interface UserService {
 
     int getIdentify(String username);
 
-    Result authenticateExpert(String username);
+    Result authenticateExpert(String username, String authorId);
 
     void updateUser(User user);
 }

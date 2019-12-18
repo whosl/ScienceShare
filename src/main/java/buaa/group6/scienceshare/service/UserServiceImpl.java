@@ -121,9 +121,10 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public Result authenticateExpert(String username) {
+    public Result authenticateExpert(String username, String authorId) {
         User user = getUserByUsername(username);
         user.setIdentity(2);
+        user.setAuthorId(authorId);
         userRepository.save(user);
         return ResultFactory.buildSuccessResult("专家认证通过！");
     }

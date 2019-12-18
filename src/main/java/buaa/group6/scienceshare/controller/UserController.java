@@ -3,8 +3,10 @@ package buaa.group6.scienceshare.controller;
 import buaa.group6.scienceshare.Result.Result;
 import buaa.group6.scienceshare.Result.ResultCode;
 import buaa.group6.scienceshare.Result.ResultFactory;
+import buaa.group6.scienceshare.model.ExpertApplication;
 import buaa.group6.scienceshare.model.MagPaper;
 import buaa.group6.scienceshare.model.User;
+import buaa.group6.scienceshare.service.ExpertApplicationService;
 import buaa.group6.scienceshare.service.MailService;
 import buaa.group6.scienceshare.service.UserService;
 import buaa.group6.scienceshare.service.mongoRepository.PaperRepository;
@@ -32,6 +34,7 @@ public class UserController {
     UserRepository userRepository;
     @Autowired
     private RestTemplate restTemplate;
+
 
 //    @CrossOrigin
 //    @RequestMapping(value="addUser", method = RequestMethod.POST)
@@ -184,11 +187,11 @@ public class UserController {
     }
 
     @RequestMapping(value = "authenticateExpert", method = RequestMethod.GET)
-    public Result changeToExpert(@RequestParam String username){
+    public Result changeToExpert(@RequestParam String username, String authorId){
         int p = userService.getIdentify(username);
         if(p == 2)return ResultFactory.buildFailResult("该专家已是已认证专家");
         userService.notify("我们", username, "已通过您的专家认证申请！", 1, "auth");
-        return userService.authenticateExpert(username);
+        return userService.authenticateExpert(username, authorId);
     }
 
     @RequestMapping(value = "allUnAuthExpert", method = RequestMethod.GET)
