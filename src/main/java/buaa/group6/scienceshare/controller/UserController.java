@@ -259,13 +259,21 @@ public class UserController {
         else return 0;
     }
 
+    /**
+     *
+     * @param username 当前所在主页的用户名
+     * @param myUsername 我的用户名 可能与上面相同
+     * @return
+     */
+
     @RequestMapping(value = "allFollowing", method = RequestMethod.GET)
-    public List<UserWithAvatar> allFollowing(@RequestParam String username){
+    public List<UserWithAvatar> allFollowing(@RequestParam String username, String myUsername){
         List<String> following = userService.getUserByUsername(username).getFollowing();
+        if(following == null)return null;
         List<UserWithAvatar> users = new ArrayList<>();
         for(String name : following){
-            User user = getUser(username);
-            int isFollowing = isFollowing(name, username);
+            User user = getUser(myUsername);
+            int isFollowing = isFollowing(name, myUsername);
             String avatarUrl = user.getAvatarUrl();
             UserWithAvatar userWithAvatar = new UserWithAvatar(name, avatarUrl, isFollowing, user.getCollege());
             users.add(userWithAvatar);
@@ -274,12 +282,13 @@ public class UserController {
     }
 
     @RequestMapping(value = "allFollowers", method = RequestMethod.GET)
-    public List<UserWithAvatar> allFollowers(@RequestParam String username){
+    public List<UserWithAvatar> allFollowers(@RequestParam String username, String myUsername){
         List<String> followers = userService.getUserByUsername(username).getFollowers();
+        if(followers == null) return null;
         List<UserWithAvatar> users = new ArrayList<>();
         for(String name : followers){
-            User user = getUser(username);
-            int isFollowing = isFollowing(name, username);
+            User user = getUser(myUsername);
+            int isFollowing = isFollowing(name, myUsername);
             String avatarUrl = user.getAvatarUrl();
             UserWithAvatar userWithAvatar = new UserWithAvatar(name, avatarUrl, isFollowing, user.getCollege());
             users.add(userWithAvatar);
