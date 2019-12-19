@@ -278,7 +278,10 @@ public class UserController {
         List<String> followers = userService.getUserByUsername(username).getFollowers();
         List<UserWithAvatar> users = new ArrayList<>();
         for(String name : followers){
-            UserWithAvatar userWithAvatar = new UserWithAvatar(name, getAvatarByUsername(name));
+            User user = getUser(username);
+            int isFollowing = isFollowing(name, username);
+            String avatarUrl = user.getAvatarUrl();
+            UserWithAvatar userWithAvatar = new UserWithAvatar(name, avatarUrl, isFollowing, user.getCollege());
             users.add(userWithAvatar);
         }
         return users;
