@@ -21,12 +21,14 @@ public class ApplicationController {
     CollegeRepository collegeRepository;
 
     @RequestMapping(value = "sendApplication", method = RequestMethod.GET)
-    public Result sendApplication(@RequestParam String username, String content, String authorId, String affiliation){
+    public Result sendApplication(@RequestParam String username, String content, String authorId,
+                                  String affiliation, String realName){
         ExpertApplication newApplication = new ExpertApplication();
         newApplication.setAffiliation(affiliation);
         newApplication.setApplyUserName(username);
         newApplication.setContent(content);
         newApplication.setAuthorId(authorId);
+        newApplication.setRealName(realName);
         expertApplicationService.updateApplication(newApplication);
         return ResultFactory.buildSuccessResult("提交申请成功!");
     }
