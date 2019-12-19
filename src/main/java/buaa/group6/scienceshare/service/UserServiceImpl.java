@@ -138,4 +138,9 @@ public class UserServiceImpl implements UserService{
     public void changeMail(User user) {
         userRepository.save(user);
     }
+
+    @Override
+    public void changeUsername(User user) {
+        userRepository.save(user);
+    }
 }

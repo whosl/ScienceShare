@@ -44,4 +44,5 @@ public interface UserService {
 
     void updateUser(User user);
     void changeMail(User user);
+    void changeUsername(User user);
 }

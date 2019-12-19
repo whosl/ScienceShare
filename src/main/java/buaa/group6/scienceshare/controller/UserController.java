@@ -295,5 +295,19 @@ public class UserController {
 
         return ResultFactory.buildSuccessResult("修改邮箱成功");
     }
+    @RequestMapping(value = "changeUsername", method = RequestMethod.GET)
+    public Result changeUsername(@RequestParam String oldUsername,String newUsername){
+        User user = userService.getUserByUsername(oldUsername);
 
+        User newUser = userService.getUserByUsername(newUsername);
+
+        if(newUser != null){
+            return ResultFactory.buildResult(ResultCode.HaveExist, "用户已存在！");
+        }else if(newUsername.equals("")){
+            return ResultFactory.buildFailResult(ResultCode.FAIL);
+        }
+        user.setUsername(newUsername);
+        userService.changeMail(user);
+        return ResultFactory.buildSuccessResult("修改用户名成功");
+    }
 }
