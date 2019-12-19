@@ -30,10 +30,10 @@ public class MailServiceImpl implements MailService {
         try{
             MimeMessage msg = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(msg,true,"utf-8");
-            helper.setFrom("learningCom110@163.com");//发件人
+            helper.setFrom("scienceshare@163.com");//发件人
             helper.setTo(toEmail);//收件人
-            helper.setCc("learningCom110@163.com");
-            helper.setSubject("学习生活交流论坛登录验证");//邮件标题
+            helper.setCc("scienceshare@163.com");
+            helper.setSubject("学术资源交流论坛登录验证");//邮件标题
             //验证码
             String str="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             for(int i=0;i<6;i++) {
@@ -41,7 +41,7 @@ public class MailServiceImpl implements MailService {
                 uuid += ch;
             }
             String message = "<div><font face=\"宋体\"><span style=\"font-size: large;\">您的注册验证码是：&nbsp;<br></span><b><font size=\"6\"><u>" +
-                    uuid+"</u></font></b><font size=\"4\">（区分大小写）</font></font><div style=\"font-size: large;\"><font face=\"宋体\">欢迎使用学习生活交流论坛。" +
+                    uuid+"</u></font></b><font size=\"4\">（区分大小写）</font></font><div style=\"font-size: large;\"><font face=\"宋体\">欢迎使用学术资源交流论坛。" +
                     "</font></div><div style=\"font-size: large;\"><font face=\"宋体\">这个验证码将在您收到这封邮件5分钟后失效。</font>&nbsp;</div></div>";
             helper.setText(message, true);
             mailSender.send(msg);
