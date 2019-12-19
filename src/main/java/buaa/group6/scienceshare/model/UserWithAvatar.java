@@ -5,9 +5,31 @@ public class UserWithAvatar {
 
     String avatarUrl;
 
-    public UserWithAvatar(String username, String avatarUrl){
+    String college;
+
+    int isFollowing;
+
+    public String getCollege() {
+        return college;
+    }
+
+    public void setCollege(String college) {
+        this.college = college;
+    }
+
+    public int getIsFollowing() {
+        return isFollowing;
+    }
+
+    public void setIsFollowing(int isFollowing) {
+        this.isFollowing = isFollowing;
+    }
+
+    public UserWithAvatar(String username, String avatarUrl, int isFollowing, String college){
         this.username = username;
         this.avatarUrl = avatarUrl;
+        this.isFollowing = isFollowing;
+        this.college = college;
     }
 
     public String getUsername() {

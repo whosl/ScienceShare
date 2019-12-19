@@ -3,18 +3,13 @@ package buaa.group6.scienceshare.controller;
 import buaa.group6.scienceshare.Result.Result;
 import buaa.group6.scienceshare.Result.ResultCode;
 import buaa.group6.scienceshare.Result.ResultFactory;
-import buaa.group6.scienceshare.model.ExpertApplication;
-import buaa.group6.scienceshare.model.MagPaper;
 import buaa.group6.scienceshare.model.User;
 import buaa.group6.scienceshare.model.UserWithAvatar;
-import buaa.group6.scienceshare.service.ExpertApplicationService;
 import buaa.group6.scienceshare.service.MailService;
 import buaa.group6.scienceshare.service.UserService;
-import buaa.group6.scienceshare.service.mongoRepository.PaperRepository;
 import buaa.group6.scienceshare.service.mongoRepository.UserRepository;
 import buaa.group6.scienceshare.util.Md5SaltTool;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.expression.spel.ast.NullLiteral;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -42,7 +37,6 @@ public class UserController {
 //    public int addUser(@RequestBody User user) {
 //        return userService.addUser(user);
 //    }
-
 
 
     @RequestMapping(value = "login", method = RequestMethod.GET, produces = "application/json; charset = UTF-8")
@@ -270,7 +264,10 @@ public class UserController {
         List<String> following = userService.getUserByUsername(username).getFollowing();
         List<UserWithAvatar> users = new ArrayList<>();
         for(String name : following){
-            UserWithAvatar userWithAvatar = new UserWithAvatar(name, getAvatarByUsername(name));
+            User user = getUser(username);
+            int isFollowing = isFollowing(name, username);
+            String avatarUrl = user.getAvatarUrl();
+            UserWithAvatar userWithAvatar = new UserWithAvatar(name, avatarUrl, isFollowing, user.getCollege());
             users.add(userWithAvatar);
         }
         return users;
