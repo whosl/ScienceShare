@@ -6,6 +6,7 @@ import buaa.group6.scienceshare.model.College;
 import buaa.group6.scienceshare.model.ExpertApplication;
 import buaa.group6.scienceshare.service.ExpertApplicationService;
 import buaa.group6.scienceshare.service.mongoRepository.CollegeRepository;
+import com.mongodb.util.JSON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +30,7 @@ public class ApplicationController {
         newApplication.setContent(content);
         newApplication.setAuthorId(authorId);
         newApplication.setRealName(realName);
+//        newApplication.setPubs(pubs);
         expertApplicationService.updateApplication(newApplication);
         return ResultFactory.buildSuccessResult("提交申请成功!");
     }
