@@ -50,4 +50,6 @@ public interface UserService {
     void changeUsername(User user);
     void addToFavorites(String username, String paperId);
     List<Feed> getFeedsByPage(String username, Integer page);
+
+    List<Object> getFavorites(String username);
 }
