@@ -16,6 +16,16 @@ public class ExpertApplication {
 
     String content;
 
+    String realName;
+
+    public String getRealName() {
+        return realName;
+    }
+
+    public void setRealName(String realName) {
+        this.realName = realName;
+    }
+
     public String getContent() {
         return content;
     }

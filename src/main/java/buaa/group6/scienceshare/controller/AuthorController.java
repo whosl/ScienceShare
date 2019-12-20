@@ -1,5 +1,6 @@
 package buaa.group6.scienceshare.controller;
 
+import buaa.group6.scienceshare.Result.Result;
 import buaa.group6.scienceshare.model.Magauthor;
 import buaa.group6.scienceshare.service.mongoRepository.AuthorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,4 +18,9 @@ public class AuthorController{
     public List<Magauthor> getAuthorStartWith(@RequestParam String name){
         return authorRepository.getTop5ByNormalizedNameStartingWith(name);
     }
+
+//    @RequestMapping(value = "followExpert", method = RequestMethod.GET)
+//    public Result followExpert(@RequestParam String expertId, String myUsername){
+//
+//    }
 }

@@ -256,6 +256,7 @@ public class UserController {
     @RequestMapping(value = "isFollowing", method = RequestMethod.GET)
     public int isFollowing(@RequestParam String followUserName, String myUserName){
         List<String> followers = userRepository.getByUsername(followUserName).getFollowers();
+        if(followers == null) return 0;
         if(followers.contains(myUserName)) return 1;
         else return 0;
     }
@@ -273,7 +274,7 @@ public class UserController {
         if(following == null)return null;
         List<UserWithAvatar> users = new ArrayList<>();
         for(String name : following){
-            User user = getUser(myUsername);
+            User user = getUser(name);
             int isFollowing = isFollowing(name, myUsername);
             String avatarUrl = user.getAvatarUrl();
             UserWithAvatar userWithAvatar = new UserWithAvatar(name, avatarUrl, isFollowing, user.getCollege());
@@ -288,7 +289,7 @@ public class UserController {
         if(followers == null) return null;
         List<UserWithAvatar> users = new ArrayList<>();
         for(String name : followers){
-            User user = getUser(myUsername);
+            User user = getUser(name);
             int isFollowing = isFollowing(name, myUsername);
             String avatarUrl = user.getAvatarUrl();
             UserWithAvatar userWithAvatar = new UserWithAvatar(name, avatarUrl, isFollowing, user.getCollege());
