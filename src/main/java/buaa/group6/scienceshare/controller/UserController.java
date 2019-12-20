@@ -328,6 +328,10 @@ public class UserController {
         return ResultFactory.buildSuccessResult("添加到收藏成功");
     }
 
+    @RequestMapping(value = "getFavorites", method = RequestMethod.GET)
+    public List<Object> getFavorites(@RequestParam String username) {
+        return userService.getFavorites(username);
+    }
 
     @RequestMapping(value = "getFeedsByPage", method = RequestMethod.GET)
     public List<Feed> getFeeds(@RequestParam String username, @RequestParam Integer page) {
