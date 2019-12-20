@@ -42,6 +42,7 @@ public class User {
 
     private List<Feed> feeds;
 
+    private String expertID;
     public String getId() {
         return id;
     }
@@ -168,6 +169,14 @@ public class User {
 
     public void setFeeds(List<Feed> feeds) {
         this.feeds = feeds;
+    }
+
+    public String getExpertID() {
+        return expertID;
+    }
+
+    public void setExpertID(String expertID) {
+        this.expertID = expertID;
     }
 }
 

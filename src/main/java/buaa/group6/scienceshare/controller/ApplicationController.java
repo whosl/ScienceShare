@@ -1,10 +1,13 @@
 package buaa.group6.scienceshare.controller;
 
 import buaa.group6.scienceshare.Result.Result;
+import buaa.group6.scienceshare.Result.ResultCode;
 import buaa.group6.scienceshare.Result.ResultFactory;
 import buaa.group6.scienceshare.model.College;
 import buaa.group6.scienceshare.model.ExpertApplication;
+import buaa.group6.scienceshare.model.User;
 import buaa.group6.scienceshare.service.ExpertApplicationService;
+import buaa.group6.scienceshare.service.UserService;
 import buaa.group6.scienceshare.service.mongoRepository.CollegeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -19,6 +22,8 @@ public class ApplicationController {
     ExpertApplicationService expertApplicationService;
     @Autowired
     CollegeRepository collegeRepository;
+    @Autowired
+    UserService userService;
 
     @RequestMapping(value = "sendApplication", method = RequestMethod.GET)
     public Result sendApplication(@RequestParam String username, String content, String authorId,
@@ -41,5 +46,14 @@ public class ApplicationController {
     @RequestMapping(value = "getCollegeByKeyword", method = RequestMethod.GET)
     public List<College> getCollegeByKeyword(@RequestParam String keyword){
         return collegeRepository.getTop5ByNameStartingWith(keyword);
+    }
+    @RequestMapping(value = "passApplication", method = RequestMethod.GET)
+    public Result passApplication(@RequestParam String applyUserName,String authorId){
+        User user = userService.getUserByUsername(applyUserName);
+        if(user == null) return ResultFactory.buildResult(ResultCode.NOT_FOUND, "申请的用户不存在");
+        user.setIdentity(2);
+        user.setExpertID(authorId);
+        userService.updateUser(user);
+        return ResultFactory.buildSuccessResult("审核通过！");
     }
 }
