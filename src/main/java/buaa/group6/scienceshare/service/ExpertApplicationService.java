@@ -7,4 +7,6 @@ import java.util.List;
 public interface ExpertApplicationService {
     void updateApplication(ExpertApplication expertApplication);
     List<ExpertApplication> allApplication();
+    void deleteApplication(List<ExpertApplication> expertApplication);
+    List<ExpertApplication> getApplicationByApplyUserNameAndAuthorId(String applyUserName, String authorId);
 }

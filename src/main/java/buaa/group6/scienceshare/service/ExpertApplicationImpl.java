@@ -22,4 +22,14 @@ public class ExpertApplicationImpl implements ExpertApplicationService{
     public List<ExpertApplication> allApplication() {
         return applicationRepository.findAll();
     }
+
+    @Override
+    public void deleteApplication(List<ExpertApplication> expertApplication) {
+        applicationRepository.deleteAll(expertApplication);
+    }
+
+    @Override
+    public List<ExpertApplication> getApplicationByApplyUserNameAndAuthorId(String applyUserName, String authorId) {
+        return applicationRepository.getByApplyUserNameAndAuthorId(applyUserName,authorId);
+    }
 }
