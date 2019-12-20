@@ -66,7 +66,7 @@ public class UserController {
 
 
     @RequestMapping(value = "register", method = RequestMethod.GET)
-    public Result register(@RequestParam String username, String password, String emailAddress){
+    public Result register(@RequestParam String username, String password, String emailAddress, String college){
         User user = userService.getUserByUsername(username);
 
         if(user != null){
@@ -85,6 +85,7 @@ public class UserController {
             user1.setUsername(username);
             user1.setPassword(encryptedPwd);
             user1.setEmailAddress(emailAddress);
+            user1.setCollege(college);
         }catch (NoSuchAlgorithmException | UnsupportedEncodingException e){
             e.printStackTrace();
         }
