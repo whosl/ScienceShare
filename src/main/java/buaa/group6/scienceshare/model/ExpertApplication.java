@@ -3,6 +3,8 @@ package buaa.group6.scienceshare.model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.List;
+
 @Document(collection = "expertapplication")
 public class ExpertApplication {
     @Id
@@ -17,6 +19,16 @@ public class ExpertApplication {
     String content;
 
     String realName;
+
+    String pubs;
+
+    public String getPubs() {
+        return pubs;
+    }
+
+    public void setPubs(String pubs) {
+        this.pubs = pubs;
+    }
 
     public String getRealName() {
         return realName;
