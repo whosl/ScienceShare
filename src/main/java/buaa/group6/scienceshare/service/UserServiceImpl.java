@@ -15,20 +15,17 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.repository.Query;
-import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Service;
-
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Queue;
+
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 
 @Service
 @Primary
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
     @Autowired
     MongoTemplate mongoTemplate;
     @Autowired
@@ -65,8 +62,8 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public void notify(String actionUsername, String notifyUsername, String message, int type, String fatherId) {//user1 操作的用户，user2 接受通知的用户
-        if(actionUsername.equals(notifyUsername));
-        else{
+        if (actionUsername.equals(notifyUsername)) ;
+        else {
             Notification notification = new Notification();
             notification.setNotifiDate(LocalDateTime.now());
             notification.setMessage(message);
@@ -74,14 +71,14 @@ public class UserServiceImpl implements UserService{
             notification.setFatherId(fatherId);
             notification.setType(type);
             User user = getUserByUsername(notifyUsername);//接受通知的用户
-            user.setUnreadNotification(user.getUnreadNotification()+1);//未读通知加1
+            user.setUnreadNotification(user.getUnreadNotification() + 1);//未读通知加1
             List<Notification> notifications = user.getNotifications();
-            if(notifications == null){
+            if (notifications == null) {
                 List<Notification> notificationList = new ArrayList<>();
                 notificationList.add(notification);
                 user.setNotifications(notificationList);
                 notification.setNotifiNo(0);
-            }else{
+            } else {
                 notification.setNotifiNo(notifications.size());
                 notifications.add(notification);
             }
@@ -89,7 +86,7 @@ public class UserServiceImpl implements UserService{
         }
     }
 
-    public void updateNotification(User user){
+    public void updateNotification(User user) {
         userRepository.save(user);
     }
 
@@ -97,28 +94,27 @@ public class UserServiceImpl implements UserService{
     public Result readNotification(String username, int notiNo) {
         User user = getUserByUsername(username);
         Notification notification = user.getNotifications().get(notiNo);
-        if(notification == null)return ResultFactory.buildFailResult(ResultCode.NOT_FOUND);
-        if(notification.getRead() == 1)return ResultFactory.buildFailResult(ResultCode.HaveExist);//已读，操作失败
+        if (notification == null) return ResultFactory.buildFailResult(ResultCode.NOT_FOUND);
+        if (notification.getRead() == 1) return ResultFactory.buildFailResult(ResultCode.HaveExist);//已读，操作失败
         notification.setRead(1);
-        user.setUnreadNotification(user.getUnreadNotification()-1);
+        user.setUnreadNotification(user.getUnreadNotification() - 1);
         updateNotification(user);
         return ResultFactory.buildSuccessResult("信息已读");
     }
 
     @Override
-    public Result readAllNotification(String username){
+    public Result readAllNotification(String username) {
         User user = getUserByUsername(username);
         List<Notification> notifications = user.getNotifications();
-        if(notifications == null)ResultFactory.buildResult(ResultCode.NOT_FOUND, "未找到任何消息");//
-        for(Notification n : notifications){
-            if(n.getRead() == 0) n.setRead(1);//标为已读
-            user.setUnreadNotification(user.getUnreadNotification()-1);
+        if (notifications == null) ResultFactory.buildResult(ResultCode.NOT_FOUND, "未找到任何消息");//
+        for (Notification n : notifications) {
+            if (n.getRead() == 0) n.setRead(1);//标为已读
+            user.setUnreadNotification(user.getUnreadNotification() - 1);
         }
-        if(user.getUnreadNotification() == 0){
+        if (user.getUnreadNotification() == 0) {
             updateNotification(user);
             return ResultFactory.buildSuccessResult("全部标为已读！");
-        }
-        else return ResultFactory.buildFailResult("操作失败！");
+        } else return ResultFactory.buildFailResult("操作失败！");
     }
 
     @Override
@@ -189,16 +185,40 @@ public class UserServiceImpl implements UserService{
                 project("feeds"),
                 unwind("feeds"),
                 sort(Sort.Direction.DESC, "feeds.time"),
-                skip((page - 1)*5),
+                skip((page - 1) * 5),
                 limit(5),
                 project()
-                    .and("feeds.time").as("time")
-                    .and("feeds.from").as("from")
-                    .and("feeds.paperId").as("paperId")
-                    .and("feeds.title").as("title")
-                    .and("feeds.event").as("event"));
+                        .and("feeds.time").as("time")
+                        .and("feeds.from").as("from")
+                        .and("feeds.paperId").as("paperId")
+                        .and("feeds.title").as("title")
+                        .and("feeds.event").as("event"));
 
         AggregationResults<Feed> result = mongoTemplate.aggregate(aggregation, "user", Feed.class);
+        return result.getMappedResults();
+    }
+
+    @Override
+    public List<Object> getFavorites(String username) {
+        Aggregation aggregation = newAggregation(
+                match(Criteria.where("username").is(username)),
+                project("favorites"),
+                unwind("favorites"),
+                lookup("magpapers", "favorites", "id", "magpaper"),
+                project()
+                        .and("magpaper.id").as("id")
+                        .and("magpaper.title").as("title")
+                        .and("magpaper.authors").as("authors")
+                        .and("magpaper.venue").as("venue")
+                        .and("magpaper.year").as("year")
+                        .and("magpaper.n_citation").as("n_citation")
+                        .and("magpaper.page_start").as("page_start")
+                        .and("magpaper.end").as("end")
+                        .and("magpaper.doc_type").as("doc_type")
+                        .and("magpaper.publisher").as("publisher")
+                        .and("magpaper.volume").as("volume")
+                        .and("magpaper.issue").as("issue"));
+        AggregationResults<Object> result = mongoTemplate.aggregate(aggregation, "user", Object.class);
         return result.getMappedResults();
     }
 }
