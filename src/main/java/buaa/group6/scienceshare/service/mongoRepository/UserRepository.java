@@ -1,5 +1,6 @@
 package buaa.group6.scienceshare.service.mongoRepository;
 
+import buaa.group6.scienceshare.model.Feed;
 import buaa.group6.scienceshare.model.User;
 import org.springframework.data.mongodb.repository.MongoRepository;
 

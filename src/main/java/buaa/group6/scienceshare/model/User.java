@@ -38,6 +38,10 @@ public class User {
 
     private String college;
 
+    private List<String> favorites;
+
+    private List<Feed> feeds;
+
     public String getId() {
         return id;
     }
@@ -149,4 +153,21 @@ public class User {
     public void setCollege(String college) {
         this.college = college;
     }
+
+    public List<String> getFavorites() {
+        return favorites;
+    }
+
+    public void setFavorites(List<String> favorites) {
+        this.favorites = favorites;
+    }
+
+    public List<Feed> getFeeds() {
+        return feeds;
+    }
+
+    public void setFeeds(List<Feed> feeds) {
+        this.feeds = feeds;
+    }
 }
+

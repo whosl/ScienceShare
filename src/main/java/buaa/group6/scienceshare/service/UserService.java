@@ -1,7 +1,10 @@
 package buaa.group6.scienceshare.service;
 
 import buaa.group6.scienceshare.Result.Result;
+import buaa.group6.scienceshare.model.Feed;
 import buaa.group6.scienceshare.model.User;
+
+import java.util.List;
 
 public interface UserService {
     /**
@@ -45,4 +48,6 @@ public interface UserService {
     void updateUser(User user);
     void changeMail(User user);
     void changeUsername(User user);
+    void addToFavorites(String username, String paperId);
+    List<Feed> getFeedsByPage(String username, Integer page);
 }

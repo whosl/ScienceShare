@@ -3,17 +3,28 @@ package buaa.group6.scienceshare.service;
 import buaa.group6.scienceshare.Result.Result;
 import buaa.group6.scienceshare.Result.ResultCode;
 import buaa.group6.scienceshare.Result.ResultFactory;
+import buaa.group6.scienceshare.model.Feed;
 import buaa.group6.scienceshare.model.Notification;
 import buaa.group6.scienceshare.model.User;
+import buaa.group6.scienceshare.service.mongoRepository.PaperRepository;
 import buaa.group6.scienceshare.service.mongoRepository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.repository.Query;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Service;
+
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
 
 @Service
 @Primary
@@ -22,6 +33,8 @@ public class UserServiceImpl implements UserService{
     MongoTemplate mongoTemplate;
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    PaperRepository paperRepository;
 
     @Override
     public int addUser(User user) {
@@ -142,5 +155,50 @@ public class UserServiceImpl implements UserService{
     @Override
     public void changeUsername(User user) {
         userRepository.save(user);
+    }
+
+    @Override
+    public void addToFavorites(String username, String paperId) {
+        User user = getUserByUsername(username);
+        String title = paperRepository.getById(paperId).getTitle();
+        if (user.getFavorites() == null) {
+            user.setFavorites(new ArrayList<>());
+        }
+        user.getFavorites().add(paperId);
+        userRepository.save(user);
+        for (String followerName : user.getFollowers()) {
+            User follower = getUserByUsername(followerName);
+            Feed feed = new Feed();
+            feed.setTime(LocalDateTime.now());
+            feed.setFrom(username);
+            feed.setPaperId(paperId);
+            feed.setTitle(title);
+            feed.setEvent("收藏");
+            if (follower.getFeeds() == null) {
+                follower.setFeeds(new ArrayList<>());
+            }
+            follower.getFeeds().add(feed);
+            userRepository.save(follower);
+        }
+    }
+
+    @Override
+    public List<Feed> getFeedsByPage(String username, Integer page) {
+        Aggregation aggregation = newAggregation(
+                match(Criteria.where("username").is(username)),
+                project("feeds"),
+                unwind("feeds"),
+                sort(Sort.Direction.DESC, "feeds.time"),
+                skip((page - 1)*5),
+                limit(5),
+                project()
+                    .and("feeds.time").as("time")
+                    .and("feeds.from").as("from")
+                    .and("feeds.paperId").as("paperId")
+                    .and("feeds.title").as("title")
+                    .and("feeds.event").as("event"));
+
+        AggregationResults<Feed> result = mongoTemplate.aggregate(aggregation, "user", Feed.class);
+        return result.getMappedResults();
     }
 }

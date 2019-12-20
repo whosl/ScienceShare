@@ -3,6 +3,7 @@ package buaa.group6.scienceshare.controller;
 import buaa.group6.scienceshare.Result.Result;
 import buaa.group6.scienceshare.Result.ResultCode;
 import buaa.group6.scienceshare.Result.ResultFactory;
+import buaa.group6.scienceshare.model.Feed;
 import buaa.group6.scienceshare.model.User;
 import buaa.group6.scienceshare.model.UserWithAvatar;
 import buaa.group6.scienceshare.service.MailService;
@@ -318,5 +319,17 @@ public class UserController {
         user.setUsername(newUsername);
         userService.changeMail(user);
         return ResultFactory.buildSuccessResult("修改用户名成功");
+    }
+
+    @RequestMapping(value = "addToFavorites", method = RequestMethod.GET)
+    public Result addToFavorites(@RequestParam String username, @RequestParam String paperId) {
+        userService.addToFavorites(username, paperId);
+        return ResultFactory.buildSuccessResult("添加到收藏成功");
+    }
+
+
+    @RequestMapping(value = "getFeedsByPage", method = RequestMethod.GET)
+    public List<Feed> getFeeds(@RequestParam String username, @RequestParam Integer page) {
+        return userService.getFeedsByPage(username, page);
     }
 }
